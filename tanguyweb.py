@@ -17,16 +17,16 @@ min_value = datetime.date(2009, 1, 1)
 pickup_date = st.date_input("date of pickup", value=None, max_value=max_value, min_value=min_value)
 pickup_time = st.time_input("time of pickup", value=None, step=60)
 pickup_longitude = st.number_input(
-    "pickup longitude", value=None, placeholder="Type a longitude...", format="%0.6f"
+    "pickup longitude", value=-73.950655, placeholder="Type a longitude...", format="%0.6f"
     )
 pickup_latitude = st.number_input(
-    "pickup latitude", value=None, placeholder="Type a latitude...", format="%0.6f"
+    "pickup latitude", value=40.783282, placeholder="Type a latitude...", format="%0.6f"
     )
 dropoff_longitude = st.number_input(
-    "dropoff longitude", value=None, placeholder="Type a longitude...", format="%0.6f"
+    "dropoff longitude", value=-73.984365, placeholder="Type a longitude...", format="%0.6f"
     )
 dropoff_latitude = st.number_input(
-    "dropoff latitude", value=None, placeholder="Type a longitude...", format="%0.6f"
+    "dropoff latitude", value=40.769802, placeholder="Type a longitude...", format="%0.6f"
     )
 passenger_count = st.number_input(
     "Passenger count",
@@ -37,19 +37,16 @@ passenger_count = st.number_input(
     format="%d"
     )
 
+pickup_datetime = datetime.datetime.combine(pickup_date, pickup_time)
 
-if pickup_date and pickup_time and passenger_count:
-
-    pickup_datetime = datetime.datetime.combine(pickup_date, pickup_time)
-
-    params = {
-    'pickup_datetime':pickup_datetime,
-    'pickup_longitude':pickup_longitude,
-    'pickup_latitude':pickup_longitude,
-    'dropoff_longitude':dropoff_longitude,
-    'dropoff_latitude':dropoff_longitude,
-    'passenger_count':passenger_count,
-    }
+params = {
+'pickup_datetime':pickup_datetime,
+'pickup_longitude':pickup_longitude,
+'pickup_latitude':pickup_latitude,
+'dropoff_longitude':dropoff_longitude,
+'dropoff_latitude':dropoff_latitude,
+'passenger_count':passenger_count,
+}
 
 if st.button("Predict fare"):
 
@@ -60,7 +57,7 @@ if st.button("Predict fare"):
 
     if response.status_code == 200:
 
-        st.write(f'Prediction of the taxifare is {np.round(data['fare'], 2)}$')
+        st.title(f'This ride will probably cost {np.round(data['fare'], 2)}$')
 
         df = pd.DataFrame(
             {
@@ -69,14 +66,12 @@ if st.button("Predict fare"):
                 'color':["#008000", "#FF0000"]
             })
 
-        '''### See on the map :
+        st.title('See on the map :')
 
-        pickup location in green
-        dropoff location in red
-        '''
+        st.markdown('-> pickup location in green :large_green_square:')
+        st.markdown('-> dropoff location in red :large_red_square:')
 
-        map = st.map(df, color="color")
+
+        map = st.map(df, color="color", zoom=9)
     else:
         st.error(f"Error from API: {response.status_code}\n{response.text}")
-
-# color=("#008000", "#FF0000")
