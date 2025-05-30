@@ -2,8 +2,6 @@ import streamlit as st
 import datetime
 import requests
 import pandas as pd
-from streamlit_folium import st_folium
-import folium
 import numpy as np
 
 st.title('TaxiFare Prediction 🚕😎💸')
